@@ -6,24 +6,51 @@ import bcrypt from "bcrypt";
 import PostModel from "./Models/Posts.js";
 import * as ENV from "./config.js";
 
-const app = express();
-app.use(express.json());
-app.use(cors());
 
-//Database connection
-const connectString =
-  `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASSWORD}@${ENV.DB_CLUSTER}/${ENV.DB_NAME}?retryWrites=true&w=majority&appName=PostiTCluster`;
+// const app = express();
+// app.use(express.json());
+// app.use(cors());
+
+// //Database connection
+// const connectString =
+//   `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASSWORD}@${ENV.DB_CLUSTER}/${ENV.DB_NAME}?retryWrites=true&w=majority&appName=PostiTCluster`;
   
-mongoose.connect(connectString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect(connectString, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+
+const app = express();
+
+// CORS middleware
 const corsOptions = {
-  origin: ENV.CLIENT_URL, //client URL local
+  origin: ENV.CLIENT_URL,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-  };
-  app.use(cors(corsOptions));
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+app.use(express.json());
+
+const connectString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASSWORD}@${ENV.DB_CLUSTER}/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+
+// Connect to MongoDB
+mongoose
+  .connect(connectString)
+  .then(() => console.log("✅ MongoDB connected successfully!"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+
+// const corsOptions = {
+//   origin: ENV.CLIENT_URL, //client URL local
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+//   };
+//   app.use(cors(corsOptions));
+
+
+
 
 
 app.post("/registerUser", async (req, res) => {
